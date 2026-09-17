@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: ai
+    database: zomato
+    schema: ai
+
+    tables:
+      - name: review_enriched
+        description: "the individual reiviews are passed through an ai to generate setiment, score and key_issues"
