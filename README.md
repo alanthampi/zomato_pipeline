@@ -2,7 +2,7 @@
 
 A Snowflake-based Zomato analytics pipeline. Local CSV data is loaded into Snowflake RAW tables, dbt transforms it into staging and marts, and Gemini-powered tools analyze reviews or generate SQL.
 
-## Flow
+##  Flow
 
 ```text
  data/*.csv
