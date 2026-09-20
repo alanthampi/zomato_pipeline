@@ -5,6 +5,7 @@ import pandas as pd
 import streamlit as st
 import snowflake.connector
 from dotenv import load_dotenv
+import whisper
 
 load_dotenv()
 
@@ -182,23 +183,96 @@ def ask_llm(question, context):
     return response.text.strip()
 
 
+
+
+
+
+@st.cache_resource
+def load_model():
+    return whisper.load_model("base")
+
+
 def main():
-    question = st.text_input(
-        "Enter your question about zomato reviews:",
+
+    st.title("🎤 Zomato Review Assistant")
+
+    # -------------------------------
+    # Load Whisper model
+    # -------------------------------
+
+    model = load_model()
+
+    # -------------------------------
+    # Audio Input
+    # -------------------------------
+
+    st.subheader("🎤 Ask using your voice")
+
+    audio_value = st.audio_input("Record your question")
+
+    voice_question = ""
+
+    if audio_value:
+
+        # Save recorded audio
+        with open("recording.wav", "wb") as f:
+            f.write(audio_value.getvalue())
+
+        # Transcribe audio using Whisper
+        result = model.transcribe("recording.wav")
+
+        voice_question = result["text"].strip()
+
+        st.write("**Transcription:**")
+        st.write(voice_question)
+
+    # -------------------------------
+    # Text Input
+    # -------------------------------
+
+    st.subheader("⌨️ Or type your question")
+
+    text_question = st.text_input(
+        "Enter your question about Zomato reviews:",
         placeholder="e.g., What are the common complaints about food quality?"
     )
 
+    # -------------------------------
+    # Decide which question to use
+    # -------------------------------
+
+    if voice_question:
+        question = voice_question
+    else:
+        question = text_question
+
+    # -------------------------------
+    # Process Question
+    # -------------------------------
+
     if question.strip():
+
         review_df = load_reviews()
 
-        top_k_reviews = get_top_k_reviews(question, review_df)
+        top_k_reviews = get_top_k_reviews(
+            question,
+            review_df
+        )
 
-        answer = ask_llm(question, top_k_reviews)
+        answer = ask_llm(
+            question,
+            top_k_reviews
+        )
 
-        st.markdown("**Answer**")
+        st.markdown("### Answer")
+
         st.write(answer)
+
+        st.markdown("### Relevant Reviews")
 
         st.dataframe(top_k_reviews)
 
+
 if __name__ == "__main__":
     main()
+

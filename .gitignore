@@ -1,0 +1,28 @@
+# Local credentials and private keys
+*.env
+!.env.example
+creds.env
+zomato/profiles.yml
+zomato/.user.yml
+*.pem
+*.p8
+*.key
+zomato/rsa_key.pub
+
+# Sensitive source data and local AI cache
+data/
+ai/*_cache.parquet
+
+# Python caches and test output
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Airflow and dbt runtime output
+airflow/logs/
+logs/
+zomato/target/
+zomato/dbt_packages/
+
+# Generated SQL bundle
+zomato/all_sql_files.txt
