@@ -1,0 +1,17 @@
+zomato:
+  target: dev
+
+  outputs:
+    dev:
+      type: snowflake
+      account: your_account_identifier
+      user: your_username
+      password: your_password
+
+      role: your_role
+      database: your_database
+      warehouse: your_warehouse
+      schema: dev
+
+      threads: 4
+      client_session_keep_alive: false
