@@ -206,7 +206,7 @@ def main():
     # Audio Input
     # -------------------------------
 
-    st.subheader("🎤 Ask using your voice")
+    st.subheader("note the table that is being queried is not full enriched by the due to budget limitation only 5 rows are done")
 
     audio_value = st.audio_input("Record your question")
 
