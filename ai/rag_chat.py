@@ -99,8 +99,8 @@ CHAT_MODEL = "gemini-3.6-flash"
 NEW_REVIEWS = 10
 TOK_K = 5
 CACHE_FILE = "review_embeddings_cache.parquet"
-
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+#modifying the secret api key to work with streamlit cloud
+client = genai.Client(api_key=st.secrets("GEMINI_API_KEY"))
 
 st.title("chat with zomato reviews")
 st.caption(f"searching for the top {NEW_REVIEWS} reviews based on your query with {CHAT_MODEL} chatmodel")
