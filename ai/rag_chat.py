@@ -6,7 +6,8 @@ import streamlit as st
 import snowflake.connector
 from dotenv import load_dotenv
 import whisper
-
+from pathlib import Path
+import subprocess
 load_dotenv()
 
 SYSTEM_PROMPT = """
@@ -187,44 +188,35 @@ def ask_llm(question, context):
 
 
 
+
 @st.cache_resource
 def load_model():
-    return whisper.load_model("base")
+    return whisper.load_model("small")
 
+def transcribe(audio_value):
+    if audio_value is None:
+        return ""
+
+    model = load_model()  # ← call it, don't reference the function itself
+
+    audio_path = Path("recording.webm")
+
+    with open(audio_path, "wb") as f:
+        f.write(audio_value.getvalue())
+
+    result = model.transcribe("recording.webm")
+
+    return result["text"]
 
 def main():
 
     st.title("🎤 Zomato Review Assistant")
 
-    # -------------------------------
-    # Load Whisper model
-    # -------------------------------
-
-    model = load_model()
-
-    # -------------------------------
-    # Audio Input
-    # -------------------------------
-
     st.subheader("🎤 Ask using your voice")
-
     audio_value = st.audio_input("Record your question")
-
-    voice_question = ""
-
-    if audio_value:
-
-        # Save recorded audio
-        with open("recording.wav", "wb") as f:
-            f.write(audio_value.getvalue())
-
-        # Transcribe audio using Whisper
-        result = model.transcribe("recording.wav")
-
-        voice_question = result["text"].strip()
-
-        st.write("**Transcription:**")
-        st.write(voice_question)
+    voice_question = transcribe(audio_value)
+    st.write("**Transcription:**")
+    st.write(voice_question)
 
     # -------------------------------
     # Text Input
